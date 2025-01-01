@@ -1,15 +1,21 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div>
+    <button @click="addComponent">Add Component</button>
+    <div v-for="(component, index) in components" :key="index">
+      <div ref="notesContainer" class="flex flex-col gap-2 items-start m-5">
+        <Vnote />
+      </div>
+    </div>
   </div>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
+<script setup>
+import { ref } from 'vue'
+import Vnote from '@/components/notesAppComponents/Vnote.vue'
+
+const components = ref([]) // Array to track components
+
+function addComponent() {
+  components.value.push({}) // Add a new component entry
 }
-</style>
+</script>

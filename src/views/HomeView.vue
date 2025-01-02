@@ -1,5 +1,9 @@
 <script setup>
 import { ref } from 'vue'
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 // Reactive data
 const noteContent = ref('')
@@ -7,10 +11,15 @@ const notes = ref([])
 
 // Save note to localStorage
 function saveNote() {
-  if (noteContent.value.trim()) {
+  const now = new Date();
+  let notesWithTime = {
+    'time': now,
+    'content': noteContent.value.trim()
+  }
+  if (notesWithTime) {
     // Get existing notes from localStorage or initialize an empty array
     const savedNotes = JSON.parse(localStorage.getItem('notes')) || []
-    savedNotes.push(noteContent.value) // Add the new note
+    savedNotes.push(notesWithTime) // Add the new note
     localStorage.setItem('notes', JSON.stringify(savedNotes)) // Save to localStorage
     noteContent.value = '' // Clear the textarea
     loadNotes()
@@ -39,19 +48,19 @@ function deleteNote(index){
       <textarea
         v-model="noteContent"
         placeholder="Write a note"
-        class="w-1/2 bg-green-200 text-green-950 rounded-md p-3"
+        class="w-full sm:w-1/2 bg-green-200 text-green-950 rounded-md p-3"
       ></textarea>
       <div class="flex gap-2">
         <button
           @click="saveNote"
-          class="flex gap-1 p-2 rounded-md bg-green-200 hover:bg-green-300 border border-green-400 font-semibold shadow-sm hover:shadow-md"
+          class="flex gap-1 p-2 text-sm sm:text-md rounded-md bg-green-200 hover:bg-green-300 border border-green-400 font-semibold shadow-sm hover:shadow-md"
         >
         <img alt="Vue logo" class="size-5" src="@/assets/buttonIcon.svg" />
         Save Note
         </button>
         <button
           @click="loadNotes"
-          class=" flex gap-1 p-2 rounded-md bg-blue-200 hover:bg-blue-300 border border-blue-400 font-semibold shadow-sm hover:shadow-md"
+          class=" flex gap-1 p-2 text-sm sm:text-md rounded-md bg-blue-200 hover:bg-blue-300 border border-blue-400 font-semibold shadow-sm hover:shadow-md"
         >
         <img alt="Vue logo" class="size-5" src="@/assets/load-list.svg" />
           Load Notes
@@ -64,11 +73,13 @@ function deleteNote(index){
         <li
           v-for="(note, index) in notes"
           :key="index"
-          class="m-1 bg-green-200 p-2 rounded-md shadow-md w-[600px] flex gap-2 items-start"
+          class="m-1 bg-green-200 p-2 rounded-md shadow-md w-full sm:w-2/3 flex flex-col gap-2 items-start justify-between"
         >
         <p>
-          {{ note }}
+          {{ note.content }}
         </p>
+        <div class="flex w-full items-center justify-end">
+          <p class="text-xs text-green-950 font-bold px-3 " >{{ dayjs(note.time).fromNow() }}</p>
           <img
           @click="deleteNote(index)"
             alt="Vue logo"
@@ -76,6 +87,7 @@ function deleteNote(index){
             title="delete note"
             src="@/assets/delete.svg"
           />
+        </div>
         </li>
       </ul>
     </div>

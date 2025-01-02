@@ -1,1 +1,0 @@
-@tailwind base;@tailwind components;@tailwind utilities;.fade-enter-active[data-v-2bdb7bdc],.fade-leave-active[data-v-2bdb7bdc]{transition:opacity .5s ease,transform .5s ease}.fade-enter-from[data-v-2bdb7bdc],.fade-leave-to[data-v-2bdb7bdc]{opacity:0;transform:translateY(20px)}.fade-enter-to[data-v-2bdb7bdc],.fade-leave-from[data-v-2bdb7bdc]{opacity:1;transform:translateY(0)}

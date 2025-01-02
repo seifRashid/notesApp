@@ -33,8 +33,12 @@ function saveNote() {
 
 // Load notes from localStorage
 function loadNotes() {
+  let reverseNotes = []
   const savedNotes = JSON.parse(localStorage.getItem('notes')) || []
-  notes.value = savedNotes // Update reactive state with loaded notes
+  savedNotes.forEach(note => {
+    reverseNotes.unshift(note)
+  });
+  notes.value = reverseNotes // Update reactive state with loaded notes
 }
 
 function deleteNote(index) {

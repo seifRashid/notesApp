@@ -1,52 +1,47 @@
 <script setup>
-import { useNotesStore } from '@/stores/notes'
-import { ref } from 'vue'
+import { ref } from 'vue';
 
-const showNote = ref(true)
-const noteContainer = ref('')
-// const note = ref([])
 
-const notes = useNotesStore()
+const editNote = ref(false)
 
-function updateStorage() {
-  notes.noteSubject.value
-  console.log(notes)
-  localStorage.setItem('noteContainer', notes)
+defineProps({
+  note:Array
+})
+
+function loadNotes() {
+  const savedNotes = JSON.parse(localStorage.getItem('notes')) || []
+  notes.value = savedNotes // Update reactive state with loaded notes
 }
 
-function deleteNote() {
-  // localStorage.removeItem('noteContainer')
-  showNote.value = false
+function deleteNote(index){
+  const savedNotes = JSON.parse(localStorage.getItem('notes')) || []
+  savedNotes.splice(index, 1)
+  localStorage.setItem('notes', JSON.stringify(savedNotes))
+  loadNotes()
 }
 </script>
 <template>
-  <div ref="noteContainer" class="flex flex-col gap-2 items-start m-5" v-show="showNote">
-    <div class="flex flex-col items-start">
-      <p class="text-blue-800 text-lg font-semibold">Subject</p>
-      <p
-        ref="noteSubject"
-        contenteditable="true"
-        class="p-2 bg-blue-300 w-[150px] h-auto font-semibold rounded-md"
-      >
-        Subject
-      </p>
-    </div>
-    <div class="flex gap-1">
-      <p
-        ref="noteContent"
-        @keyup="updateStorage()"
-        contenteditable="true"
-        title="Write down whats on your mind"
-        class="p-2 bg-blue-300 w-[600px] h-[150px] rounded-md relative"
-      ></p>
-      <img
-        @click="deleteNote"
-        alt="Vue logo"
-        class="size-5 cursor-pointer"
-        title="delete note"
-        src="@/assets/delete.svg"
-      />
-    </div>
-  </div>
+  <p class="text-xl font-semibold text-green-900" >
+          title: <span class="bg-white p-1 rounded-md" >{{ note.title }}</span>
+        </p>
+        <p :contenteditable="editNote" class="outline-0" @click="editNote = true" >
+          {{ note.content }}
+        </p>
+        <div class="flex gap-2 w-full items-center justify-end">
+          <p class="text-xs text-green-950 font-bold" >{{ dayjs(note.time).fromNow() }}</p>
+          <img
+          @click="deleteNote(index)"
+            alt="Vue logo"
+            class="size-7 cursor-pointer bg-red-200 shadow-md border border-red-400 p-1 rounded-full"
+            title="delete note"
+            src="@/assets/delete.svg"
+          />
+          <img
+          v-show="editNote"
+            alt="Vue logo"
+            class="size-7 cursor-pointer bg-blue-200 shadow-md border border-blue-400 p-1 rounded-full"
+            title="delete note"
+            src="@/assets/delete.svg"
+          />
+        </div>
 </template>
-<style scoped></style>
